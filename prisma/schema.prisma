@@ -12,7 +12,7 @@ model User {
   email          String    @unique
   password       String
   name           String
-  role           String    @default("VOLUNTEER") // REPORTER or VOLUNTEER
+  role           String    @default("VOLUNTEER")
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   
@@ -25,7 +25,7 @@ model VolunteerProfile {
   id                String   @id @default(cuid())
   userId            String   @unique
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  skills            String   // Comma-separated skills
+  skills            String
   preferredLocation String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -33,10 +33,10 @@ model VolunteerProfile {
 
 model Report {
   id          String    @id @default(cuid())
-  problemType String    // MEDICAL, FOOD, EDUCATION, SHELTER, SANITATION, OTHER
+  problemType String
   location    String
   description String
-  severity    String    // LOW, MEDIUM, HIGH
+  severity    String
   contactInfo String?
   priorityScore Int     @default(0)
   createdAt   DateTime  @default(now())
@@ -51,7 +51,7 @@ model MicroTask {
   id          String      @id @default(cuid())
   title       String
   description String
-  status      String      @default("AVAILABLE") // AVAILABLE, CLAIMED, IN_PROGRESS, COMPLETED
+  status      String      @default("AVAILABLE")
   location    String
   reportId    String
   report      Report      @relation(fields: [reportId], references: [id], onDelete: Cascade)
