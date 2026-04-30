@@ -5,9 +5,7 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  swcMinify: true,
-  output: 'standalone', // Reduces build complexity
+  }
 }
 
 module.exports = nextConfig
