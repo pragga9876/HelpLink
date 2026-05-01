@@ -181,12 +181,12 @@ HelpLink addresses these challenges through:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                         Client Browser                       │
+│                         Client Browser                      │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    Next.js (Vercel Hosting)                  │
+│                    Next.js (Vercel Hosting)                 │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
 │  │  Frontend   │  │  API Routes │  │  Authentication     │  │
 │  │   Pages     │◄─┤  (Serverless│  │  (NextAuth.js)      │  │
@@ -196,8 +196,8 @@ HelpLink addresses these challenges through:
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      Prisma ORM Layer                        │
-│         (Type-safe database queries, migrations)             │
+│                      Prisma ORM Layer                       │
+│         (Type-safe database queries, migrations)            │
 └─────────────────────────────────────────────────────────────┘
                               │
               ┌───────────────┴───────────────┐
@@ -252,16 +252,16 @@ Dashboard Update (Realtime)
 │ role            │     │ description     │     │ status          │
 │ createdat       │     │ severity        │     │ location        │
 │ updatedat       │     │ contactinfo     │     │ volunteerId (FK)│>───┐
-└─────────────────┘     │ priorityscore   │     │ createdat       │     │
-        │               │ createdat       │     │ updatedat       │     │
-        │               │ updatedat       │     └─────────────────┘     │
-        │               └─────────────────┘                             │
-        │                                                               │
-        │         ┌─────────────────┐                                   │
-        └────────>│ VolunteerProfile│                                   │
-                  ├─────────────────┤                                   │
-                  │ id (PK)         │                                   │
-                  │ userId (FK)     │>───────────────────────────────────┘
+└─────────────────┘     │ priorityscore   │     │ createdat       │    │
+        │               │ createdat       │     │ updatedat       │    │
+        │               │ updatedat       │     └─────────────────┘    │
+        │               └─────────────────┘                            │
+        │                                                              │
+        │         ┌─────────────────┐                                  │
+        └────────>│ VolunteerProfile│                                  │
+                  ├─────────────────┤                                  │
+                  │ id (PK)         │                                  │
+                  │ userId (FK)     │>─────────────────────────────────┘
                   │ skills          │
                   │ preferredLocation│
                   │ createdat       │
