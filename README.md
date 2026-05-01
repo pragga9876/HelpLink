@@ -836,7 +836,7 @@ Full license text available in the LICENSE file.
 
 - **Submission Date**: May 2026
 - **Category**: Social Impact / Volunteer Coordination
-- **Team Size**: 1 (Individual)
+- **Team Size**: 4
 - **Hours Spent**: ~40 hours
 
 ---
