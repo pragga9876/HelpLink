@@ -832,23 +832,6 @@ Full license text available in the LICENSE file.
 - **Project Link**: [https://github.com/pragga9876/HelpLink](https://github.com/pragga9876/HelpLink)
 - **Live Demo**: [https://sparklesquadhelplink.vercel.app](https://sparklesquadhelplink.vercel.app)
 
-### For Hackathon Judges
-
-- **Submission Date**: May 2026
-- **Category**: Social Impact / Volunteer Coordination
-- **Team Size**: 4
-- **Hours Spent**: ~40 hours
-
----
-
-## 🙏 Acknowledgments
-
-- **Next.js team** for amazing framework
-- **Vercel** for free hosting
-- **Neon** for free PostgreSQL
-- **shadcn/ui** for beautiful components
-- **All contributors** who make open source awesome
-
 ---
 
 ## 📊 Project Status
