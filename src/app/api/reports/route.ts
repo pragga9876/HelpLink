@@ -3,23 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
-  try {
-    const reports = await prisma.report.findMany({
-      orderBy: { createdat: "desc" },  // Changed from createdAt
-      include: {
-        reporter: {
-          select: { name: true, email: true }
-        }
-      },
-    });
-    return NextResponse.json(reports);
-  } catch (error) {
-    console.error("GET Error:", error);
-    return NextResponse.json([], { status: 200 }); // Return empty array instead of error
-  }
-}
-
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -50,16 +33,16 @@ export async function POST(req: Request) {
     const severityBonus = severity === "HIGH" ? 1 : 0;
     const priorityScore = baseScore + sameLocationCount + severityBonus;
 
+    // Create report using the correct field names
     const report = await prisma.report.create({
       data: {
-        problemType,
-        location,
-        description,
-        severity,
-        contactInfo: contactInfo || null,
-        priorityScore,
-        reporterId: session.user.id,
-        // Explicitly set lowercase fields
+        problemtype: problemType,  // Note: problemtype not problemType
+        location: location,
+        description: description,
+        severity: severity,
+        contactinfo: contactInfo || null,
+        priorityscore: priorityScore,
+        reporterid: session.user.id,
         createdat: new Date(),
         updatedat: new Date(),
       },
@@ -67,7 +50,18 @@ export async function POST(req: Request) {
 
     return NextResponse.json(report, { status: 201 });
   } catch (error) {
-    console.error("POST Error:", error);
+    console.error("Error:", error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    const reports = await prisma.report.findMany({
+      orderBy: { createdat: "desc" },
+    });
+    return NextResponse.json(reports);
+  } catch (error) {
+    return NextResponse.json([]);
   }
 }
