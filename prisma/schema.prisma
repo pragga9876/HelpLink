@@ -8,55 +8,57 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  email          String    @unique
-  password       String
-  name           String
-  role           String    @default("VOLUNTEER")
-  createdat      DateTime  @default(now()) @map("createdat")
-  updatedat      DateTime  @updatedAt @map("updatedat")
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("VOLUNTEER")
+  createdat DateTime @default(now())
+  updatedat DateTime @updatedAt
   
-  reports        Report[]
-  microTasks     MicroTask[]
-  volunteerProfile VolunteerProfile?
+  reports           Report[]
+  microTasks        MicroTask[]
+  volunteerProfile  VolunteerProfile?
 }
 
 model VolunteerProfile {
   id                String   @id @default(cuid())
   userId            String   @unique
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   skills            String
   preferredLocation String
-  createdat         DateTime @default(now()) @map("createdat")
-  updatedat         DateTime @updatedAt @map("updatedat")
+  createdat         DateTime @default(now())
+  updatedat         DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Report {
-  id          String    @id @default(cuid())
-  problemType String
-  location    String
-  description String
-  severity    String
-  contactInfo String?
-  priorityScore Int     @default(0)
-  createdat   DateTime  @default(now()) @map("createdat")
-  updatedat   DateTime  @updatedAt @map("updatedat")
-  reporterId  String
-  reporter    User      @relation(fields: [reporterId], references: [id])
+  id            String   @id @default(cuid())
+  problemType   String
+  location      String
+  description   String
+  severity      String
+  contactInfo   String?
+  priorityScore Int      @default(0)
+  createdat     DateTime @default(now())
+  updatedat     DateTime @updatedAt
+  reporterId    String
   
-  microTasks  MicroTask[]
+  reporter   User       @relation(fields: [reporterId], references: [id])
+  microTasks MicroTask[]
 }
 
 model MicroTask {
-  id          String      @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   description String
-  status      String      @default("AVAILABLE")
+  status      String   @default("AVAILABLE")
   location    String
-  createdat   DateTime    @default(now()) @map("createdat")
-  updatedat   DateTime    @updatedAt @map("updatedat")
+  createdat   DateTime @default(now())
+  updatedat   DateTime @updatedAt
   reportId    String
-  report      Report      @relation(fields: [reportId], references: [id], onDelete: Cascade)
   volunteerId String?
-  volunteer   User?       @relation(fields: [volunteerId], references: [id])
+  
+  report    Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  volunteer User?  @relation(fields: [volunteerId], references: [id])
 }
