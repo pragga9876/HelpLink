@@ -39,35 +39,55 @@ export default function DashboardPage() {
     }
   }, [session]);
 
-  async function fetchStats() {
+ async function fetchStats() {
+  try {
+    const reportsRes = await fetch("/api/reports");
+    // Handle non-JSON responses
+    const reportsText = await reportsRes.text();
+    let reports = [];
     try {
-      const [reportsRes, tasksRes] = await Promise.all([
-        fetch("/api/reports"),
-        fetch("/api/microtasks"),
-      ]);
-      const reports = await reportsRes.json();
-      const tasks = await tasksRes.json();
-      
-      setStats({
-        totalReports: reports.length || 6,
-        urgentNeeds: reports.filter((r: any) => r.priorityScore >= 7).length || 3,
-        availableTasks: tasks.filter((t: any) => t.status === "AVAILABLE").length || 8,
-        activeVolunteers: 12,
-      });
-    } catch (error) {
-      console.error("Error fetching stats:", error);
+      reports = JSON.parse(reportsText);
+    } catch {
+      reports = [];
     }
+    
+    const tasksRes = await fetch("/api/microtasks");
+    let tasks = [];
+    const tasksText = await tasksRes.text();
+    try {
+      tasks = JSON.parse(tasksText);
+    } catch {
+      tasks = [];
+    }
+    
+    setStats({
+      totalReports: Array.isArray(reports) ? reports.length : 0,
+      urgentNeeds: Array.isArray(reports) ? reports.filter((r: any) => r.priorityScore >= 7).length : 0,
+      availableTasks: Array.isArray(tasks) ? tasks.filter((t: any) => t.status === "AVAILABLE").length : 0,
+      activeVolunteers: 12,
+    });
+  } catch (error) {
+    console.error("Error fetching stats:", error);
+    setStats({ totalReports: 0, urgentNeeds: 0, availableTasks: 0, activeVolunteers: 12 });
   }
+}
 
-  async function fetchRecentReports() {
+async function fetchRecentReports() {
+  try {
+    const res = await fetch("/api/reports?limit=5");
+    const text = await res.text();
+    let data = [];
     try {
-      const res = await fetch("/api/reports?limit=5");
-      const data = await res.json();
-      setRecentReports(data.slice(0, 3));
-    } catch (error) {
-      console.error("Error fetching recent reports:", error);
+      data = JSON.parse(text);
+    } catch {
+      data = [];
     }
+    setRecentReports(Array.isArray(data) ? data.slice(0, 3) : []);
+  } catch (error) {
+    console.error("Error fetching recent reports:", error);
+    setRecentReports([]);
   }
+}
 
   if (status === "loading") {
     return (
