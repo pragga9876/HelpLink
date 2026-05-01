@@ -834,6 +834,19 @@ Full license text available in the LICENSE file.
 
 ---
 
+### Database Architecture
+
+HelpLink uses **separate databases for development and production** (industry best practice).
+
+| Environment | Database |
+|-------------|----------|
+| 🖥️ **Local Development** | SQLite (`prisma/dev.db`) |
+| ☁️ **Production** | PostgreSQL (Neon.tech) |
+
+📖 **[Full Database Architecture Documentation →](./DATABASE.md)**
+
+---
+
 ## 📊 Project Status
 
 | Aspect | Status |
