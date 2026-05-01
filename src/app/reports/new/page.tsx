@@ -15,6 +15,13 @@ export default function NewReportPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    problemType: "",
+    location: "",
+    description: "",
+    severity: "",
+    contactInfo: "",
+  });
 
   if (status === "unauthenticated") {
     router.push("/login");
@@ -37,30 +44,41 @@ export default function NewReportPage() {
     event.preventDefault();
     setIsLoading(true);
 
-    const formData = new FormData(event.currentTarget);
-    const data = {
-      problemType: formData.get("problemType"),
-      location: formData.get("location"),
-      description: formData.get("description"),
-      severity: formData.get("severity"),
-      contactInfo: formData.get("contactInfo"),
-    };
+    // Validate required fields
+    if (!formData.problemType || !formData.location || !formData.description || !formData.severity) {
+      toast.error("Please fill in all required fields");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch("/api/reports", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        headers: { 
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          problemType: formData.problemType,
+          location: formData.location,
+          description: formData.description,
+          severity: formData.severity,
+          contactInfo: formData.contactInfo || null,
+        }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        toast.success("Report submitted successfully!");
+        toast.success("Report submitted successfully! 🎉");
         router.push("/reports");
+        router.refresh();
       } else {
-        toast.error("Failed to submit report");
+        console.error("API Error:", data);
+        toast.error(data.error || "Failed to submit report");
       }
     } catch (error) {
-      toast.error("Something went wrong");
+      console.error("Submission error:", error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -76,8 +94,12 @@ export default function NewReportPage() {
           <CardContent>
             <form onSubmit={onSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="problemType">Problem Type</Label>
-                <Select name="problemType" required>
+                <Label htmlFor="problemType">Problem Type *</Label>
+                <Select 
+                  value={formData.problemType}
+                  onValueChange={(value) => setFormData({ ...formData, problemType: value })}
+                  required
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -93,18 +115,36 @@ export default function NewReportPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input id="location" name="location" placeholder="e.g., Howrah, West Bengal" required />
+                <Label htmlFor="location">Location *</Label>
+                <Input 
+                  id="location" 
+                  name="location" 
+                  placeholder="e.g., Howrah, West Bengal" 
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  required 
+                />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" name="description" rows={4} required />
+                <Label htmlFor="description">Description *</Label>
+                <Textarea 
+                  id="description" 
+                  name="description" 
+                  rows={4}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  required 
+                />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="severity">Severity</Label>
-                <Select name="severity" required>
+                <Label htmlFor="severity">Severity *</Label>
+                <Select 
+                  value={formData.severity}
+                  onValueChange={(value) => setFormData({ ...formData, severity: value })}
+                  required
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select severity" />
                   </SelectTrigger>
@@ -118,7 +158,13 @@ export default function NewReportPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="contactInfo">Contact Information (Optional)</Label>
-                <Input id="contactInfo" name="contactInfo" placeholder="Phone or email" />
+                <Input 
+                  id="contactInfo" 
+                  name="contactInfo" 
+                  placeholder="Phone or email"
+                  value={formData.contactInfo}
+                  onChange={(e) => setFormData({ ...formData, contactInfo: e.target.value })}
+                />
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
