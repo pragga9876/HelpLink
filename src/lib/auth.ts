@@ -1,10 +1,18 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // Google Provider - REAL AUTHENTICATION
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    
+    // Keep credentials provider as fallback (optional)
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -43,6 +51,27 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // Auto-create user in database when Google signs in
+      if (account?.provider === "google") {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        });
+        
+        if (!existingUser) {
+          // Create new user for Google sign-in
+          await prisma.user.create({
+            data: {
+              email: user.email!,
+              name: user.name!,
+              role: "VOLUNTEER", // Default role
+              password: "", // No password for Google users
+            },
+          });
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -52,8 +81,13 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        // Get fresh user data from database
+        const dbUser = await prisma.user.findUnique({
+          where: { email: session.user.email! },
+        });
+        
+        session.user.id = dbUser?.id || (token.id as string);
+        session.user.role = dbUser?.role || (token.role as string);
       }
       return session;
     },
@@ -64,8 +98,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development",
 };

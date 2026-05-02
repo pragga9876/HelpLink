@@ -4,256 +4,36 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Starting seed...');
-
+  console.log('🌱 Seeding database...');
+  
+  const hashedPassword = await bcrypt.hash('password123', 10);
+  
   // Clear existing data
   await prisma.microTask.deleteMany();
   await prisma.report.deleteMany();
   await prisma.volunteerProfile.deleteMany();
   await prisma.user.deleteMany();
-
-  console.log('Cleared existing data');
-
-  // Create users
-  const hashedPassword = await bcrypt.hash('password123', 10);
   
-  const reporter1 = await prisma.user.create({
-    data: {
-      email: 'ngo1@example.com',
-      password: hashedPassword,
-      name: 'NGO Howrah',
-      role: 'REPORTER',
-    },
+  // Create users
+  await prisma.user.createMany({
+    data: [
+      { email: 'ngo1@example.com', password: hashedPassword, name: 'NGO Howrah', role: 'REPORTER' },
+      { email: 'ngo2@example.com', password: hashedPassword, name: 'Community Kolkata', role: 'REPORTER' },
+      { email: 'volunteer1@example.com', password: hashedPassword, name: 'Amit Sharma', role: 'VOLUNTEER' },
+      { email: 'volunteer2@example.com', password: hashedPassword, name: 'Priya Patel', role: 'VOLUNTEER' },
+      { email: 'volunteer3@example.com', password: hashedPassword, name: 'Rahul Verma', role: 'VOLUNTEER' }
+    ]
   });
-
-  const reporter2 = await prisma.user.create({
-    data: {
-      email: 'ngo2@example.com',
-      password: hashedPassword,
-      name: 'Community Kolkata',
-      role: 'REPORTER',
-    },
-  });
-
-  const volunteer1 = await prisma.user.create({
-    data: {
-      email: 'volunteer1@example.com',
-      password: hashedPassword,
-      name: 'Amit Sharma',
-      role: 'VOLUNTEER',
-      volunteerProfile: {
-        create: {
-          skills: 'Medical Aid,Logistics',
-          preferredLocation: 'Howrah',
-        },
-      },
-    },
-  });
-
-  const volunteer2 = await prisma.user.create({
-    data: {
-      email: 'volunteer2@example.com',
-      password: hashedPassword,
-      name: 'Priya Patel',
-      role: 'VOLUNTEER',
-      volunteerProfile: {
-        create: {
-          skills: 'Teaching,Verification',
-          preferredLocation: 'Kolkata',
-        },
-      },
-    },
-  });
-
-  const volunteer3 = await prisma.user.create({
-    data: {
-      email: 'volunteer3@example.com',
-      password: hashedPassword,
-      name: 'Rahul Verma',
-      role: 'VOLUNTEER',
-      volunteerProfile: {
-        create: {
-          skills: 'Cooking/Distribution,Logistics',
-          preferredLocation: 'Howrah',
-        },
-      },
-    },
-  });
-
-  console.log('Created users');
-
-  // Create reports
-  const reports = [
-    {
-      problemType: 'MEDICAL',
-      location: 'Howrah',
-      description: 'Urgent medical supplies needed for flood-affected families. Need bandages, antiseptics, and basic medicines.',
-      severity: 'HIGH',
-      contactInfo: '+91 9876543210',
-      reporterId: reporter1.id,
-    },
-    {
-      problemType: 'FOOD',
-      location: 'Howrah',
-      description: '200 families need food supplies. Rice, dal, and basic vegetables required.',
-      severity: 'HIGH',
-      contactInfo: '+91 9876543211',
-      reporterId: reporter1.id,
-    },
-    {
-      problemType: 'SHELTER',
-      location: 'Kolkata',
-      description: 'Temporary shelter materials needed for displaced families. Tarpaulin, blankets, and mats.',
-      severity: 'MEDIUM',
-      contactInfo: '+91 9876543212',
-      reporterId: reporter2.id,
-    },
-    {
-      problemType: 'EDUCATION',
-      location: 'Kolkata',
-      description: 'School supplies for 50 children. Notebooks, pencils, and textbooks.',
-      severity: 'MEDIUM',
-      contactInfo: '+91 9876543213',
-      reporterId: reporter2.id,
-    },
-    {
-      problemType: 'SANITATION',
-      location: 'Howrah',
-      description: 'Sanitation kits required. Soap, sanitizers, and hygiene products.',
-      severity: 'LOW',
-      contactInfo: '+91 9876543214',
-      reporterId: reporter1.id,
-    },
-    {
-      problemType: 'MEDICAL',
-      location: 'Kolkata',
-      description: 'First aid training session needed for community workers.',
-      severity: 'MEDIUM',
-      contactInfo: '+91 9876543215',
-      reporterId: reporter2.id,
-    },
-  ];
-
-  const createdReports = [];
-  for (const report of reports) {
-    // Calculate priority score
-    let baseScore = 0;
-    switch (report.problemType) {
-      case 'MEDICAL': baseScore = 5; break;
-      case 'FOOD': baseScore = 4; break;
-      case 'EDUCATION': baseScore = 3; break;
-      case 'SHELTER': baseScore = 3; break;
-      case 'SANITATION': baseScore = 2; break;
-      default: baseScore = 1;
-    }
-    
-    const sameLocationCount = reports.filter(r => r.location === report.location).length;
-    const severityBonus = report.severity === 'HIGH' ? 1 : 0;
-    const priorityScore = baseScore + sameLocationCount + severityBonus;
-    
-    const created = await prisma.report.create({
-      data: {
-        ...report,
-        priorityScore,
-      },
-    });
-    createdReports.push(created);
-  }
-
-  console.log('Created reports');
-
-  // Create micro-tasks
-  const microTasks = [
-    {
-      title: 'Deliver Medical Supplies',
-      description: 'Pick up and deliver medical supplies to Howrah camp. 5 boxes of medicines.',
-      location: 'Howrah',
-      reportId: createdReports[0].id,
-      status: 'AVAILABLE',
-    },
-    {
-      title: 'Medical Volunteer',
-      description: 'Spend 2 hours providing basic first aid at the Howrah camp.',
-      location: 'Howrah',
-      reportId: createdReports[0].id,
-      status: 'AVAILABLE',
-    },
-    {
-      title: 'Collect Food Donations',
-      description: 'Coordinate with local grocery stores to collect food items.',
-      location: 'Howrah',
-      reportId: createdReports[1].id,
-      status: 'CLAIMED',
-      volunteerId: volunteer3.id,
-    },
-    {
-      title: 'Pack Food Kits',
-      description: 'Help pack 200 food kits at the distribution center.',
-      location: 'Howrah',
-      reportId: createdReports[1].id,
-      status: 'AVAILABLE',
-    },
-    {
-      title: 'Distribute Food',
-      description: 'Join food distribution team for 3 hours.',
-      location: 'Howrah',
-      reportId: createdReports[1].id,
-      status: 'AVAILABLE',
-    },
-    {
-      title: 'Set Up Shelter',
-      description: 'Help set up temporary shelters at the camp site.',
-      location: 'Kolkata',
-      reportId: createdReports[2].id,
-      status: 'AVAILABLE',
-    },
-    {
-      title: 'Collect Blankets',
-      description: 'Collect blankets and warm clothes from donors.',
-      location: 'Kolkata',
-      reportId: createdReports[2].id,
-      status: 'AVAILABLE',
-    },
-    {
-      title: 'Teach Children',
-      description: 'Conduct 2-hour teaching session for children aged 6-10.',
-      location: 'Kolkata',
-      reportId: createdReports[3].id,
-      status: 'AVAILABLE',
-    },
-    {
-      title: 'Prepare Teaching Materials',
-      description: 'Create simple worksheets and learning materials.',
-      location: 'Kolkata',
-      reportId: createdReports[3].id,
-      status: 'CLAIMED',
-      volunteerId: volunteer2.id,
-    },
-    {
-      title: 'Distribute Sanitation Kits',
-      description: 'Help distribute hygiene kits to 50 families.',
-      location: 'Howrah',
-      reportId: createdReports[4].id,
-      status: 'AVAILABLE',
-    },
-  ];
-
-  for (const task of microTasks) {
-    await prisma.microTask.create({
-      data: task,
-    });
-  }
-
-  console.log('Created micro-tasks');
-  console.log('✅ Database seeded successfully!');
-  console.log('\n📝 Demo Accounts:');
-  console.log('Reporter: ngo1@example.com / password123');
-  console.log('Volunteer: volunteer1@example.com / password123');
+  
+  console.log('✅ Created 5 users');
+  console.log('\n📝 You can now login with:');
+  console.log('   ngo1@example.com / password123');
+  console.log('   volunteer1@example.com / password123');
 }
 
 main()
   .catch((e) => {
-  console.error('❌ Seed failed:', e);
+    console.error('❌ Seed failed:', e);
     process.exit(1);
   })
   .finally(async () => {
