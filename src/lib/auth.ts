@@ -101,3 +101,11 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+// Add at the top
+console.log("=== AUTH DEBUG ===");
+console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
+console.log("GOOGLE_CLIENT_ID exists:", !!process.env.GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET exists:", !!process.env.GOOGLE_CLIENT_SECRET);
+console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
+console.log("==================");
