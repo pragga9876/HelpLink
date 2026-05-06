@@ -13,8 +13,8 @@ model User {
   password  String
   name      String
   role      String   @default("VOLUNTEER")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdat DateTime @default(now())
+  updatedat DateTime @updatedAt
   
   reports           Report[]
   microTasks        MicroTask[]
@@ -26,8 +26,8 @@ model VolunteerProfile {
   userId            String   @unique
   skills            String
   preferredLocation String
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdat         DateTime @default(now())
+  updatedat         DateTime @updatedAt
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -40,8 +40,8 @@ model Report {
   severity      String
   contactInfo   String?
   priorityScore Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdat     DateTime @default(now())
+  updatedat     DateTime @updatedAt
   reporterId    String
   
   reporter   User       @relation(fields: [reporterId], references: [id])
@@ -54,8 +54,8 @@ model MicroTask {
   description String
   status      String   @default("AVAILABLE")
   location    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdat   DateTime @default(now())
+  updatedat   DateTime @updatedAt
   reportId    String
   volunteerId String?
   
