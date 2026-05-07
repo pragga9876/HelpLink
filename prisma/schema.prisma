@@ -25,7 +25,7 @@ model VolunteerProfile {
   id                String   @id @default(cuid())
   userId            String   @unique
   skills            String
-  preferredLocation String
+  preferredlocation String
   createdat         DateTime @default(now())
   updatedat         DateTime @updatedAt
   
@@ -34,17 +34,17 @@ model VolunteerProfile {
 
 model Report {
   id            String   @id @default(cuid())
-  problemType   String
+  problemtype   String
   location      String
   description   String
   severity      String
-  contactInfo   String?
-  priorityScore Int      @default(0)
+  contactinfo   String?
+  priorityscore Int      @default(0)
   createdat     DateTime @default(now())
   updatedat     DateTime @updatedAt
-  reporterId    String
+  reporterid    String
   
-  reporter   User       @relation(fields: [reporterId], references: [id])
+  reporter   User       @relation(fields: [reporterid], references: [id])
   microTasks MicroTask[]
 }
 
@@ -56,9 +56,9 @@ model MicroTask {
   location    String
   createdat   DateTime @default(now())
   updatedat   DateTime @updatedAt
-  reportId    String
-  volunteerId String?
+  reportid    String
+  volunteerid String?
   
-  report    Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  volunteer User?  @relation(fields: [volunteerId], references: [id])
+  report    Report @relation(fields: [reportid], references: [id], onDelete: Cascade)
+  volunteer User?  @relation(fields: [volunteerid], references: [id])
 }
