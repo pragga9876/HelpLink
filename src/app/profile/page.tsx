@@ -56,34 +56,41 @@ export default function ProfilePage() {
     }
   }
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsLoading(true);
+async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+  setIsLoading(true);
 
-    try {
-      const response = await fetch("/api/profile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          skills: selectedSkills.join(","),
-          preferredLocation: preferredLocation,
-        }),
-      });
+  console.log("Saving profile with:", {
+    skills: selectedSkills.join(","),
+    preferredLocation: preferredLocation
+  });
 
-      const data = await response.json();
+  try {
+    const response = await fetch("/api/profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        skills: selectedSkills.join(","),
+        preferredLocation: preferredLocation,
+      }),
+    });
 
-      if (response.ok) {
-        toast.success("Profile updated successfully! 🎉");
-        await fetchProfile();
-      } else {
-        toast.error(data.error || "Failed to update profile");
-      }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
+    const data = await response.json();
+    console.log("Response:", data);
+
+    if (response.ok) {
+      toast.success("Profile updated successfully! 🎉");
+      await fetchProfile(); // Refresh the profile data
+    } else {
+      toast.error(data.error || "Failed to update profile");
     }
+  } catch (error) {
+    console.error("Submit error:", error);
+    toast.error("Something went wrong. Please try again.");
+  } finally {
+    setIsLoading(false);
   }
+}
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
