@@ -10,31 +10,27 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Try to find existing profile
     let profile = await prisma.volunteerProfile.findUnique({
       where: { userId: session.user.id },
     });
     
-    // If no profile exists, create an empty one
     if (!profile) {
       try {
         profile = await prisma.volunteerProfile.create({
           data: {
             userId: session.user.id,
             skills: "",
-            preferredLocation: "",
+            preferredlocation: "",  // ← lowercase
           },
         });
       } catch (createError) {
-        console.error("Create profile error:", createError);
-        return NextResponse.json({ skills: "", preferredLocation: "" });
+        return NextResponse.json({ skills: "", preferredlocation: "" });
       }
     }
     
     return NextResponse.json(profile);
   } catch (error) {
-    console.error("GET /api/profile error:", error);
-    return NextResponse.json({ skills: "", preferredLocation: "" });
+    return NextResponse.json({ skills: "", preferredlocation: "" });
   }
 }
 
@@ -46,41 +42,26 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    console.log("Received update:", body); // Debug log
-    
-    const { skills, preferredLocation } = body;
+    const { skills, preferredlocation } = body;  // ← lowercase
 
-    // Validate input
-    if (skills === undefined) {
-      return NextResponse.json({ error: "Skills field missing" }, { status: 400 });
-    }
-
-    // Update or create profile
     const profile = await prisma.volunteerProfile.upsert({
       where: { userId: session.user.id },
       update: { 
         skills: skills || "",
-        preferredLocation: preferredLocation || "",
+        preferredlocation: preferredlocation || "",  // ← lowercase
       },
       create: {
         userId: session.user.id,
         skills: skills || "",
-        preferredLocation: preferredLocation || "",
+        preferredlocation: preferredlocation || "",  // ← lowercase
       },
     });
 
-    console.log("Updated profile:", profile); // Debug log
-
-    return NextResponse.json({ 
-      success: true, 
-      profile,
-      message: "Profile updated successfully"
-    });
+    return NextResponse.json({ success: true, profile });
   } catch (error) {
-    console.error("POST /api/profile error:", error);
+    console.error("POST error:", error);
     return NextResponse.json({ 
-      error: "Failed to update profile",
-      details: error.message 
+      error: "Failed to update profile" 
     }, { status: 500 });
   }
 }
