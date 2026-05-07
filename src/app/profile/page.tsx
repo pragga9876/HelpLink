@@ -40,49 +40,56 @@ export default function ProfilePage() {
     }
   }, [session]);
 
-  async function fetchProfile() {
-    try {
-      const response = await fetch("/api/profile");
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data);
-        setSelectedSkills(data.skills ? data.skills.split(",").filter((s: string) => s) : []);
-        // Use lowercase field name to match database
-        setPreferredLocation(data.preferredlocation || "");
-      }
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  }
-
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/profile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          skills: selectedSkills.join(","),
-          preferredlocation: preferredLocation,  // ← lowercase field name
-        }),
-      });
-
+async function fetchProfile() {
+  try {
+    const response = await fetch("/api/profile");
+    if (response.ok) {
       const data = await response.json();
-
-      if (response.ok) {
-        toast.success("Profile updated successfully! 🎉");
-        await fetchProfile();
-      } else {
-        toast.error(data.error || "Failed to update profile");
-      }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
+      setProfile(data);
+      setSelectedSkills(data.skills ? data.skills.split(",").filter((s: string) => s) : []);
+      // Use lowercase field name
+      setPreferredLocation(data.preferredlocation || "");
     }
+  } catch (error) {
+    console.error("Error fetching profile:", error);
   }
+}
+
+async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+  setIsLoading(true);
+
+  console.log("Sending data:", {
+    skills: selectedSkills.join(","),
+    preferredlocation: preferredLocation  // Note: lowercase 'l'
+  });
+
+  try {
+    const response = await fetch("/api/profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        skills: selectedSkills.join(","),
+        preferredlocation: preferredLocation,  // ← MUST be lowercase 'l'
+      }),
+    });
+
+    const data = await response.json();
+    console.log("Response:", data);
+
+    if (response.ok) {
+      toast.success(data.message || "Profile updated successfully! 🎉");
+      await fetchProfile();
+    } else {
+      toast.error(data.error || "Failed to update profile");
+    }
+  } catch (error) {
+    console.error("Submit error:", error);
+    toast.error("Something went wrong. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+}
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

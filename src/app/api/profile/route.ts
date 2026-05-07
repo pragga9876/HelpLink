@@ -14,10 +14,10 @@ export async function GET() {
       where: { userId: session.user.id },
     });
     
-    return NextResponse.json(profile || {});
+    return NextResponse.json(profile || { skills: "", preferredlocation: "" });
   } catch (error) {
-    console.error("Error fetching profile:", error);
-    return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+    console.error("GET error:", error);
+    return NextResponse.json({ skills: "", preferredlocation: "" });
   }
 }
 
@@ -29,24 +29,35 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { skills, preferredLocation } = body;
+    console.log("Received data:", body);
+    
+    const { skills, preferredlocation } = body;
 
     const profile = await prisma.volunteerProfile.upsert({
       where: { userId: session.user.id },
       update: { 
         skills: skills || "",
-        preferredLocation: preferredLocation || "",
+        preferredlocation: preferredlocation || "",
       },
       create: {
         userId: session.user.id,
         skills: skills || "",
-        preferredLocation: preferredLocation || "",
+        preferredlocation: preferredlocation || "",
       },
     });
 
-    return NextResponse.json(profile);
+    console.log("Saved profile:", profile);
+    
+    return NextResponse.json({ 
+      success: true, 
+      profile,
+      message: "Profile updated successfully"
+    });
   } catch (error) {
-    console.error("Error updating profile:", error);
-    return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
+    console.error("POST error:", error);
+    return NextResponse.json({ 
+      error: "Failed to update profile",
+      details: error.message 
+    }, { status: 500 });
   }
 }
