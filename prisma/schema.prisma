@@ -25,7 +25,7 @@ model VolunteerProfile {
   id                String   @id @default(cuid())
   userId            String   @unique
   skills            String
-  preferredlocation String
+  preferredLocation String
   createdat         DateTime @default(now())
   updatedat         DateTime @updatedAt
   

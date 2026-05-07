@@ -14,14 +14,12 @@ export async function GET() {
       where: { userId: session.user.id },
     });
     
-    // Always return an object with the expected fields
     return NextResponse.json({
       skills: profile?.skills || "",
-      preferredlocation: profile?.preferredlocation || "",
+      preferredLocation: profile?.preferredLocation || "",
     });
   } catch (error) {
-    console.error("GET error:", error);
-    return NextResponse.json({ skills: "", preferredlocation: "" });
+    return NextResponse.json({ skills: "", preferredLocation: "" });
   }
 }
 
@@ -33,36 +31,24 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    console.log("Received:", body);
+    console.log("Saving:", body);
 
-    // Try to update existing profile
-    try {
-      const updated = await prisma.volunteerProfile.update({
-        where: { userId: session.user.id },
-        data: {
-          skills: body.skills || "",
-          preferredlocation: body.preferredlocation || "",
-        },
-      });
-      console.log("Updated existing profile:", updated);
-      return NextResponse.json({ success: true, profile: updated });
-    } catch (updateError) {
-      // If update fails, create new profile
-      const created = await prisma.volunteerProfile.create({
-        data: {
-          userId: session.user.id,
-          skills: body.skills || "",
-          preferredlocation: body.preferredlocation || "",
-        },
-      });
-      console.log("Created new profile:", created);
-      return NextResponse.json({ success: true, profile: created });
-    }
+    const profile = await prisma.volunteerProfile.upsert({
+      where: { userId: session.user.id },
+      update: { 
+        skills: body.skills || "",
+        preferredLocation: body.preferredLocation || "",
+      },
+      create: {
+        userId: session.user.id,
+        skills: body.skills || "",
+        preferredLocation: body.preferredLocation || "",
+      },
+    });
+
+    return NextResponse.json({ success: true, profile });
   } catch (error) {
-    console.error("POST error:", error);
-    return NextResponse.json({ 
-      error: "Failed to update profile",
-      details: String(error)
-    }, { status: 500 });
+    console.error("Error:", error);
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
