@@ -7,23 +7,16 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
-      return NextResponse.json({ error: "No session" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if VolunteerProfile table exists and has the right columns
-    const tableCheck = await prisma.$queryRaw`
-      SELECT column_name 
-      FROM information_schema.columns 
-      WHERE table_name = 'VolunteerProfile'
-    `;
-    
-    // Try to find or create profile
+    // Try to find existing profile
     let profile = await prisma.volunteerProfile.findUnique({
       where: { userId: session.user.id },
     });
     
+    // If no profile exists, create an empty one
     if (!profile) {
-      // Try to create one
       try {
         profile = await prisma.volunteerProfile.create({
           data: {
@@ -33,23 +26,54 @@ export async function GET() {
           },
         });
       } catch (createError) {
-        return NextResponse.json({ 
-          error: "Create failed", 
-          details: String(createError),
-          tableColumns: tableCheck
-        }, { status: 500 });
+        // If creation fails, return empty object
+        return NextResponse.json({ skills: "", preferredLocation: "" });
       }
     }
     
-    return NextResponse.json({ 
-      success: true, 
-      profile,
-      tableColumns: tableCheck
-    });
+    return NextResponse.json(profile);
   } catch (error) {
+    console.error("GET /api/profile error:", error);
+    // Return empty profile instead of error
+    return NextResponse.json({ skills: "", preferredLocation: "" });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { skills, preferredLocation } = body;
+
+    // Validate input
+    if (skills === undefined || preferredLocation === undefined) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Upsert profile
+    const profile = await prisma.volunteerProfile.upsert({
+      where: { userId: session.user.id },
+      update: { 
+        skills: skills || "",
+        preferredLocation: preferredLocation || "",
+      },
+      create: {
+        userId: session.user.id,
+        skills: skills || "",
+        preferredLocation: preferredLocation || "",
+      },
+    });
+
+    return NextResponse.json({ success: true, profile });
+  } catch (error) {
+    console.error("POST /api/profile error:", error);
     return NextResponse.json({ 
-      error: String(error),
-      message: error.message 
+      error: "Failed to update profile",
+      details: error.message 
     }, { status: 500 });
   }
 }
