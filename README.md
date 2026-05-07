@@ -1,5 +1,3 @@
-Here's your **updated README** with all the recent changes (Google OAuth, working profile, heatmap, etc.):
-
 ```markdown
 # HelpLink - Volunteer Coordination Platform
 
@@ -54,41 +52,38 @@ Instead of overwhelming potential volunteers with large, intimidating responsibi
 ## ✨ Key Features
 
 ### 1. 🔐 Google OAuth Authentication
-- **Sign in with Google** - No more fake demo accounts
+- Sign in with your own Google account
 - Real email verification
 - Automatic user registration
 - Works on both localhost and production
 
 ### 2. 📊 Smart Priority Scoring System
-- **Rule-based algorithm** that automatically calculates urgency scores
-- Medical emergencies score 5 points, Food needs 4 points, etc.
-- Location density bonus (+1 for each additional report in same area)
+- Rule-based algorithm that automatically calculates urgency scores
+- Medical emergencies score 5 points, Food needs 4 points
+- Location density bonus (+1 per report in same area)
 - Severity bonus (+1 for HIGH severity)
-- **No AI/ML required** - fully deterministic and transparent
+- No AI/ML required - fully deterministic
 
-### 3. 🧩 Micro-Task System (The WOW Feature)
+### 3. 🧩 Micro-Task System
 - Break down large reports into small, actionable tasks
-- Examples: "Deliver 5 meals", "Teach 2-hour session", "Distribute medical supplies"
+- Examples: "Deliver 5 meals", "Teach 2-hour session"
 - Claim tasks instantly with one click
 - Real-time status updates (Available → Claimed → In Progress → Completed)
-- Perfect for busy people with limited time
 
 ### 4. 🗺️ Location-Based Heatmap
 - Groups reports by location automatically
 - Color-coded urgency (Red = Critical, Orange = High, Green = Normal)
 - Progress bars show priority levels
 - Click any location to see filtered reports
-- Real data from your database
 
 ### 5. 👤 Volunteer Profile Management
 - Profile picture upload (saved locally)
-- Multi-select skills (Medical Aid, Teaching, Logistics, etc.)
+- Multi-select skills (Medical Aid, Teaching, Logistics)
 - Preferred location setting
 - Profile completion tracker
-- Impact points (coming soon)
 
 ### 6. 📱 Dual-Role System
-- **Reporters (NGOs/Field Workers)**: Submit community needs, track priorities
+- **Reporters (NGOs)**: Submit community needs, track priorities
 - **Volunteers**: Browse tasks, claim assignments, track impact
 
 ---
@@ -97,12 +92,12 @@ Instead of overwhelming potential volunteers with large, intimidating responsibi
 
 | Environment | URL | Status |
 |-------------|-----|--------|
-| **Production** | [sparklesquadhelplink.vercel.app](https://sparklesquadhelplink.vercel.app) | ✅ Live |
-| **Development** | `http://localhost:3000` | Local only |
+| **Production** | https://sparklesquadhelplink.vercel.app | ✅ Live |
+| **Development** | http://localhost:3000 | Local only |
 
 ### Demo Credentials
 - **Google Sign In** - Use your own Google account
-- **Email/Password** - Create an account via `/register`
+- **Email/Password** - Create an account via /register
 
 ---
 
@@ -112,41 +107,41 @@ Instead of overwhelming potential volunteers with large, intimidating responsibi
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Next.js** | 15.0.7 | React framework with App Router |
-| **TypeScript** | 5.6.3 | Type safety and better DX |
-| **Tailwind CSS** | 3.4.14 | Utility-first styling |
-| **shadcn/ui** | Latest | Accessible component library |
-| **Lucide React** | 0.460.0 | Icon library |
+| Next.js | 15.0.7 | React framework with App Router |
+| TypeScript | 5.6.3 | Type safety |
+| Tailwind CSS | 3.4.14 | Utility-first styling |
+| shadcn/ui | Latest | Accessible components |
+| Lucide React | 0.460.0 | Icons |
 
 ### Backend
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Next.js API Routes** | 15.0.7 | Serverless API endpoints |
-| **Prisma ORM** | 5.22.0 | Database management & type safety |
-| **NextAuth.js (Auth.js)** | 4.24.8 | Authentication (Google + Credentials) |
-| **bcryptjs** | 2.4.3 | Password hashing |
+| Next.js API Routes | 15.0.7 | Serverless API endpoints |
+| Prisma ORM | 5.22.0 | Database management |
+| NextAuth.js | 4.24.8 | Authentication |
+| bcryptjs | 2.4.3 | Password hashing |
 
 ### Authentication
 
 | Provider | Status |
 |----------|--------|
-| **Google OAuth** | ✅ Fully working |
-| **Email/Password** | ✅ Fully working |
+| Google OAuth | ✅ Fully working |
+| Email/Password | ✅ Fully working |
 
 ### Database
 
 | Environment | Database | Purpose |
 |-------------|----------|---------|
-| **Development** | SQLite | Local development, zero config |
-| **Production** | PostgreSQL (Neon) | Cloud database, scalable |
+| Development | SQLite | Local development |
+| Production | PostgreSQL (Neon) | Cloud database |
 
 ### Deployment
 
 | Platform | Purpose |
 |----------|---------|
-| **Vercel** | Hosting & deployment |
-| **Neon** | PostgreSQL hosting |
+| Vercel | Hosting |
+| Neon | PostgreSQL hosting |
 
 ---
 
@@ -172,14 +167,12 @@ Instead of overwhelming potential volunteers with large, intimidating responsibi
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                      Prisma ORM Layer                       │
-│         (Type-safe database queries, migrations)            │
 └─────────────────────────────────────────────────────────────┘
                               │
               ┌───────────────┴───────────────┐
               ▼                               ▼
 ┌─────────────────────────┐     ┌─────────────────────────────┐
 │   SQLite (Development)  │     │  PostgreSQL (Production)    │
-│   File: prisma/dev.db   │     │  Neon Tech (Cloud)          │
 └─────────────────────────┘     └─────────────────────────────┘
 ```
 
@@ -189,48 +182,41 @@ Instead of overwhelming potential volunteers with large, intimidating responsibi
 
 ### Models
 
-#### User
+**User**
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | String | Primary key |
-| `email` | String | Unique login email |
-| `password` | String | bcrypt-hashed (empty for Google users) |
-| `name` | String | Display name |
-| `role` | String | `VOLUNTEER` or `REPORTER` |
-| `createdat` | DateTime | Auto-set on creation |
-| `updatedat` | DateTime | Auto-update on change |
+| id | String | Primary key |
+| email | String | Unique login email |
+| password | String | bcrypt-hashed (empty for Google users) |
+| name | String | Display name |
+| role | String | VOLUNTEER or REPORTER |
 
-#### Report
+**Report**
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | String | Primary key |
-| `problemtype` | String | MEDICAL, FOOD, EDUCATION, SHELTER, etc. |
-| `location` | String | City/area name |
-| `description` | Text | Detailed description |
-| `severity` | String | LOW, MEDIUM, HIGH |
-| `priorityscore` | Int | Calculated score (1-10+) |
-| `reporterid` | String | FK to User |
+| id | String | Primary key |
+| problemtype | String | MEDICAL, FOOD, EDUCATION, etc. |
+| location | String | City/area name |
+| description | Text | Detailed description |
+| severity | String | LOW, MEDIUM, HIGH |
+| priorityscore | Int | Calculated score (1-10+) |
 
-#### MicroTask
+**MicroTask**
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | String | Primary key |
-| `title` | String | Short task name |
-| `description` | Text | Task details |
-| `status` | String | AVAILABLE, CLAIMED, IN_PROGRESS, COMPLETED |
-| `location` | String | Where task is needed |
-| `reportid` | String | FK to Report |
-| `volunteerid` | String | FK to User (who claimed it) |
+| id | String | Primary key |
+| title | String | Task name |
+| description | Text | Task details |
+| status | String | AVAILABLE, CLAIMED, COMPLETED |
+| location | String | Where task is needed |
 
-#### VolunteerProfile
+**VolunteerProfile**
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | String | Primary key |
-| `userid` | String | FK to User (unique) |
-| `skills` | String | Comma-separated skills |
-| `preferredLocation` | String | City/area preference |
-| `createdat` | DateTime | Auto-set |
-| `updatedat` | DateTime | Auto-update |
+| id | String | Primary key |
+| userid | String | FK to User |
+| skills | String | Comma-separated skills |
+| preferredLocation | String | City/area preference |
 
 ---
 
@@ -262,8 +248,8 @@ Priority Score = BaseScore + LocationBonus + SeverityBonus
 
 ### Priority Tiers
 
-| Score | Priority Level | Color |
-|-------|---------------|-------|
+| Score | Priority | Color |
+|-------|----------|-------|
 | 7-10+ | Critical | 🔴 Red |
 | 4-6 | High | 🟠 Orange |
 | 1-3 | Normal | 🟢 Green |
@@ -274,10 +260,9 @@ Priority Score = BaseScore + LocationBonus + SeverityBonus
 
 ### Prerequisites
 
-- **Node.js** 18.x or higher
-- **npm** 9.x or higher
-- **Git**
-- **Google Cloud account** (for OAuth - optional)
+- Node.js 18.x or higher
+- npm 9.x or higher
+- Git
 
 ### Step 1: Clone the Repository
 
@@ -297,14 +282,9 @@ npm install
 Create `.env` file:
 
 ```env
-# Database (SQLite for local development)
 DATABASE_URL="file:./prisma/dev.db"
-
-# NextAuth
 NEXTAUTH_SECRET="your-secret-key-here"
 NEXTAUTH_URL="http://localhost:3000"
-
-# Google OAuth (optional - get from Google Cloud Console)
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 ```
@@ -312,13 +292,8 @@ GOOGLE_CLIENT_SECRET="your-google-client-secret"
 ### Step 4: Set Up the Database
 
 ```bash
-# Generate Prisma client
 npx prisma generate
-
-# Create database tables
 npx prisma db push
-
-# Seed the database
 node prisma/seed.js
 ```
 
@@ -328,7 +303,7 @@ node prisma/seed.js
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open http://localhost:3000
 
 ---
 
@@ -336,23 +311,21 @@ Open [http://localhost:3000](http://localhost:3000)
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `DATABASE_URL` | Database connection string | ✅ Yes |
-| `NEXTAUTH_SECRET` | JWT encryption secret | ✅ Yes |
-| `NEXTAUTH_URL` | Application URL | ✅ Yes |
-| `GOOGLE_CLIENT_ID` | Google OAuth Client ID | ❌ Optional |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret | ❌ Optional |
+| DATABASE_URL | Database connection string | ✅ Yes |
+| NEXTAUTH_SECRET | JWT encryption secret | ✅ Yes |
+| NEXTAUTH_URL | Application URL | ✅ Yes |
+| GOOGLE_CLIENT_ID | Google OAuth Client ID | ❌ Optional |
+| GOOGLE_CLIENT_SECRET | Google OAuth Client Secret | ❌ Optional |
 
 ### For Production (Vercel + Neon)
 
-Add these in Vercel dashboard:
-
 | Variable | Value |
 |----------|-------|
-| `DATABASE_URL` | Neon PostgreSQL connection string |
-| `NEXTAUTH_SECRET` | Generated secret (32+ characters) |
-| `NEXTAUTH_URL` | `https://your-app.vercel.app` |
-| `GOOGLE_CLIENT_ID` | From Google Cloud Console |
-| `GOOGLE_CLIENT_SECRET` | From Google Cloud Console |
+| DATABASE_URL | Neon PostgreSQL connection string |
+| NEXTAUTH_SECRET | Generated secret (32+ characters) |
+| NEXTAUTH_URL | https://your-app.vercel.app |
+| GOOGLE_CLIENT_ID | From Google Cloud Console |
+| GOOGLE_CLIENT_SECRET | From Google Cloud Console |
 
 ---
 
@@ -360,15 +333,15 @@ Add these in Vercel dashboard:
 
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
-| POST | `/api/auth/register` | Create new user | ❌ |
-| POST | `/api/auth/callback/credentials` | Email login | ❌ |
-| POST | `/api/auth/callback/google` | Google login | ❌ |
-| GET | `/api/reports` | Get all reports | ✅ |
-| POST | `/api/reports` | Create new report | ✅ (REPORTER) |
-| GET | `/api/microtasks` | Get all tasks | ✅ |
-| POST | `/api/microtasks/[id]/claim` | Claim a task | ✅ (VOLUNTEER) |
-| GET | `/api/profile` | Get volunteer profile | ✅ |
-| POST | `/api/profile` | Update profile | ✅ |
+| POST | /api/auth/register | Create new user | ❌ |
+| POST | /api/auth/callback/credentials | Email login | ❌ |
+| POST | /api/auth/callback/google | Google login | ❌ |
+| GET | /api/reports | Get all reports | ✅ |
+| POST | /api/reports | Create new report | ✅ |
+| GET | /api/microtasks | Get all tasks | ✅ |
+| POST | /api/microtasks/[id]/claim | Claim a task | ✅ |
+| GET | /api/profile | Get volunteer profile | ✅ |
+| POST | /api/profile | Update profile | ✅ |
 
 ---
 
@@ -378,8 +351,8 @@ Add these in Vercel dashboard:
 
 | Role | Email | Password |
 |------|-------|----------|
-| **Reporter (NGO)** | `ngo1@example.com` | `password123` |
-| **Volunteer** | `volunteer1@example.com` | `password123` |
+| Reporter (NGO) | ngo1@example.com | password123 |
+| Volunteer | volunteer1@example.com | password123 |
 
 ### Google Sign In
 
@@ -389,11 +362,9 @@ Use your own Google account - it will be automatically registered!
 
 ## ⚠️ Caveats & Limitations
 
-### Current Limitations
-
 | Limitation | Status |
 |------------|--------|
-| Real-time updates | ⏳ Planned (WebSockets) |
+| Real-time updates | ⏳ Planned |
 | File uploads | ⏳ Planned |
 | Email notifications | ⏳ Planned |
 | Mobile app | ⏳ Planned |
@@ -403,9 +374,9 @@ Use your own Google account - it will be automatically registered!
 
 | Environment | Constraint |
 |-------------|------------|
-| **Vercel** | Serverless functions (10s timeout) |
-| **Neon Free Tier** | 1GB storage |
-| **SQLite** | Local development only |
+| Vercel | Serverless functions (10s timeout) |
+| Neon Free Tier | 1GB storage |
+| SQLite | Local development only |
 
 ---
 
@@ -420,15 +391,13 @@ Use your own Google account - it will be automatically registered!
 
 ### Medium-term
 - [ ] Real-time updates (WebSockets)
-- [ ] Interactive map (Leaflet/Mapbox)
-- [ ] Mobile responsive improvements
+- [ ] Interactive map
 - [ ] Volunteer impact badges
 
 ### Long-term
 - [ ] Mobile app (React Native)
 - [ ] AI-assisted task breakdown
 - [ ] Impact analytics dashboard
-- [ ] NGO verification system
 
 ---
 
@@ -449,7 +418,7 @@ Use your own Google account - it will be automatically registered!
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+MIT License - see LICENSE file for details.
 
 ---
 
@@ -457,9 +426,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 **Project Maintainer**: Pragga Mukherjee
 
-- **GitHub**: [@pragga9876](https://github.com/pragga9876)
-- **Project Link**: [https://github.com/pragga9876/HelpLink](https://github.com/pragga9876/HelpLink)
-- **Live Demo**: [https://sparklesquadhelplink.vercel.app](https://sparklesquadhelplink.vercel.app)
+- GitHub: https://github.com/pragga9876
+- Project Link: https://github.com/pragga9876/HelpLink
+- Live Demo: https://sparklesquadhelplink.vercel.app
 
 ---
 
@@ -467,8 +436,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 | Environment | Database |
 |-------------|----------|
-| 🖥️ **Local Development** | SQLite |
-| ☁️ **Production** | PostgreSQL (Neon) |
+| Local Development | SQLite |
+| Production | PostgreSQL (Neon) |
 
 ---
 
@@ -478,7 +447,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
   <sub>Making social impact accessible to everyone, one micro-task at a time.</sub>
 </div>
 ```
-
-
-- ✅ Updated tech stack badges
-- ✅ Working API endpoints documentatio- ✅ Cleaner structure and better organization 📚
+git commit -m "docs: Update README with latest features"
+git push origin main
+```
