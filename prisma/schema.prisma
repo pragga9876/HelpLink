@@ -23,13 +23,13 @@ model User {
 
 model VolunteerProfile {
   id                String   @id @default(cuid())
-  userId            String   @unique
+  userid            String   @unique   // ← lowercase 'u', not camelCase
   skills            String
   preferredLocation String
   createdat         DateTime @default(now())
   updatedat         DateTime @updatedAt
   
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userid], references: [id], onDelete: Cascade)
 }
 
 model Report {

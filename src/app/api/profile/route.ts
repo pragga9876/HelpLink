@@ -11,7 +11,7 @@ export async function GET() {
     }
 
     const profile = await prisma.volunteerProfile.findUnique({
-      where: { userId: session.user.id },
+      where: { userid: session.user.id },  // ← lowercase 'u'
     });
     
     return NextResponse.json({
@@ -19,6 +19,7 @@ export async function GET() {
       preferredLocation: profile?.preferredLocation || "",
     });
   } catch (error) {
+    console.error("GET error:", error);
     return NextResponse.json({ skills: "", preferredLocation: "" });
   }
 }
@@ -31,16 +32,15 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    console.log("Saving:", body);
 
     const profile = await prisma.volunteerProfile.upsert({
-      where: { userId: session.user.id },
+      where: { userid: session.user.id },  // ← lowercase 'u'
       update: { 
         skills: body.skills || "",
         preferredLocation: body.preferredLocation || "",
       },
       create: {
-        userId: session.user.id,
+        userid: session.user.id,  // ← lowercase 'u'
         skills: body.skills || "",
         preferredLocation: body.preferredLocation || "",
       },
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, profile });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("POST error:", error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
