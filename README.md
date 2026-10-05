@@ -421,16 +421,6 @@ MIT License - see LICENSE file for details.
 
 ---
 
-## 📞 Contact
-
-**Project Maintainer**: Pragga Mukherjee
-
-- GitHub: https://github.com/pragga9876
-- Project Link: https://github.com/pragga9876/HelpLink
-- Live Demo: https://sparklesquadhelplink.vercel.app
-
----
-
 ### Database Architecture
 
 | Environment | Database |
@@ -443,5 +433,4 @@ MIT License - see LICENSE file for details.
 <div align="center">
   <strong>Built with ❤️ for the Google Solution Challenge 2026</strong>
   <br />
-  <sub>Making social impact accessible to everyone, one micro-task at a time.</sub>
 </div>
