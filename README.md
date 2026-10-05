@@ -431,6 +431,6 @@ MIT License - see LICENSE file for details.
 ---
 
 <div align="center">
-  <strong>Built with ❤️ for the Google Solution Challenge 2026</strong>
+  <strong>Built with ❤️ for the Google Solutions Challenge 2026</strong>
   <br />
 </div>
